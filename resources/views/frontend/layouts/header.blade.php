@@ -37,41 +37,67 @@
 
       <a href="{{url('/home')}}" class="logo d-flex align-items-center me-auto">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src="{{url('frontend/img/sarvi-logo.webp')}}" alt=""> 
-        <h1 class="sitename">SarviSolutions</h1>
+        {{-- <img src="{{url('frontend/img/sarvi-logo.webp')}}" alt="">  --}}
+        <h1 class="sitename">Vehiclee</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="{{url('/home')}}" class="active">Home<br></a></li>
+          <li><a href="{{url('/')}}" class="active">Home<br></a></li>
           <li><a href="{{url('/about')}}">About</a></li>
-          <li><a href="{{url('/courses')}}">Courses</a></li>
-          <li><a href="{{url('/trainers')}}">Trainers</a></li>
-          <li><a href="{{url('/events')}}">Events</a></li>
+          {{-- <li><a href="{{url('/courses')}}">Courses</a></li> --}}
+          {{-- <li><a href="{{url('/trainers')}}">Trainers</a></li> --}}
+          {{-- <li><a href="{{url('/events')}}">Events</a></li> --}}
           <li><a href="{{url('/pricing')}}">Pricing</a></li>
-          {{-- <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li> --}}
           <li><a href="{{url('/contact')}}">Contact</a></li>
+          @if (Route::has('login'))
+                @auth
+                    @if(auth()->user()->is_admin)  {{-- Check if the user is an admin --}}
+                        <li>
+                            <a
+                                href="{{ route('admin.dashboard') }}"  {{-- Redirect to admin dashboard --}}
+                                class="btn-getstarted pe-4 ms-0"
+                            >
+                                Admin Dashboard
+                            </a>
+                        </li>
+                    @else  {{-- Regular user --}}
+                        <li>
+                            <a
+                                href="{{ route('dashboard') }}"  {{-- Redirect to user dashboard --}}
+                                class="btn-getstarted pe-4 ms-0"
+                            >
+                                Dashboard
+                            </a>
+                        </li>
+                    @endif
+                @else
+                    <li>
+                        <a
+                            href="{{ route('login') }}"
+                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                        >
+                            Login
+                        </a>
+                    </li>
+                    @if (Route::has('register'))
+                        <li>
+                            <a
+                                href="{{ route('register') }}"
+                                class="btn-getstarted pe-4 ms-0"
+                            >
+                                Get Started
+                            </a>
+                        </li>
+                    @endif
+                @endauth
+            @endif
+
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="">Get Started</a>
+      {{-- <a class="btn-getstarted" href="">Get Started</a> --}}
 
     </div>
   </header>

@@ -4,45 +4,22 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Frontend\AboutController;
-use App\Http\Controllers\Frontend\ContactController;    
-use App\Http\Controllers\Frontend\EventsController;
-use App\Http\Controllers\Frontend\PricingController;
-use App\Http\Controllers\Frontend\TrainersController;
+use App\Http\Controllers\Frontend\ContactController;  
+use App\Http\Controllers\Admin\AdminHomeController;  
+use App\Http\Controllers\Admin\AdminLoginController;  
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Middleware\GuestAdminMiddleware;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\UserMiddleware;
 
 
-//admin routes
-// 1]main dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-//seprate dashboard page 
-Route::get('/Dashboard', function () {
-    return view('layouts.adminpages.Dashboard');
-})->name('Dashboard');
-
-//admin profile
-//seprate dashboard page 
-Route::get('/adminprofile', function () {
-    return view('layouts.adminpages.adminprofile');
-})->name('adminprofile');
 
 //frontendquries
 Route::get('/frontenquiries', [ContactController::class, 'showEnquiries'])->name('layouts.adminpages.frontenquiries');
 
 
 //frontend routes
-//for login
-route::get('/loginone', function(){
-    return view('loginone');
-});
-
-Route::get('/home', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 Route::get('/about', [HomeController::class, 'about']);
 Route::get('/contact', [HomeController::class, 'contact']);
 Route::get('/courses', [HomeController::class, 'courses']);
@@ -53,49 +30,31 @@ Route::get('/trainers', [HomeController::class, 'trainers']);
 Route::post('contact/post', [ContactController::class, 'contact_post']);
 
 
-
-
-
-
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
 });
-//login logout
 
-Route::get('logout', function () {
-    auth()->logout();
-    
-    return to_route('login');
+
+
+
+//ALL NEW ROUTES FOR LOGIN AND SIGNUP OF USER AND ADMIN
+Route::prefix('admin')->name('admin.')->group(function(){
+    Route::middleware([GuestAdminMiddleware::class])->group(function(){
+        Route::get('/login', [AdminLoginController::class, 'index']);
+        Route::post('/login', [AdminLoginController::class, 'login'])->name('login');
+    });
+
+    Route::middleware(['auth', AdminMiddleware::class])->group(function(){
+        Route::get('/dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
+    });
 });
 
-Route::get('login', function () {
-    auth()->login();
 
-    return to_route('dashboard');
-});
+Auth::routes();
 
-
-require __DIR__ . '/auth.php';
-
-
-
-
-
-//To Add New User
-Route::get('addUser', function(){
-    return view('layouts.adminpages.addUserNew');
-});
-
-//To employee page
-Route::get('employee', function(){
-    return view('layouts.adminpages.employee');
-});
-
-//To new Login
-Route::get('login2', function(){
-    return view('auth.login2');
-});
+Route::get('/dashboard', [HomeController::class, 'dashboard'])
+    ->name('dashboard')
+    ->middleware(UserMiddleware::class);
