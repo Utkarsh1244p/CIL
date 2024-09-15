@@ -19,7 +19,7 @@ Follow these steps to set up the project:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/SarviSolutions/cil.git
+   git clone https://github.com/Utkarsh1244p/cil.git
    cd cil
 
 2. **Install PHP Dependencies**
